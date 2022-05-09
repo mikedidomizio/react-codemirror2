@@ -2,6 +2,8 @@ import * as React from 'react';
 import * as Adapter from 'enzyme-adapter-react-16';
 import * as Enzyme from 'enzyme';
 import * as sinon from 'sinon';
+import {render, screen} from '@testing-library/react'
+import '@testing-library/jest-dom';
 
 import {Controlled, UnControlled} from '../src';
 
@@ -1024,4 +1026,22 @@ describe('Props', () => {
 
     wrapper.unmount();
   });
+});
+
+
+it('will render JSON beautified with react-testing-library', () => {
+  Object.defineProperties(window.HTMLElement.prototype, {
+    offsetWidth: {
+      get() { return parseFloat(this.style.width) || 1 },
+    }
+  });
+
+  render(<UnControlled
+    options={{
+      mode: 'application/json',
+    }}
+    value={JSON.stringify({"react-testing-library": "works with react-codemirror2"}, null, 2)}
+  />);
+
+  expect(screen.getByText(/"react-testing-library": "works with react-codemirror2"/)).toBeVisible();
 });
